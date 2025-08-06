@@ -1,1 +1,449 @@
-m
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CAMBIO: Título de la pestaña actualizado -->
+    <title>¿Qué tan insatisfecho(a) de tu vida estás?</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Source+Serif+4:opsz,wght@8..60,400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Estilos personalizados y configuración de fuentes */
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #f9fafb;
+        }
+        .font-serif-display {
+            font-family: 'Source Serif 4', serif;
+        }
+        /* Transiciones suaves para las pantallas */
+        .screen {
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+        .screen.hidden {
+            opacity: 0;
+            transform: scale(0.95);
+            pointer-events: none;
+            position: absolute;
+        }
+
+        /* Animación de carga */
+        .loader {
+            border-top-color: #f9442c;
+            animation: spinner 1.5s linear infinite;
+        }
+        
+        @keyframes spinner {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 flex items-center justify-center min-h-screen p-4">
+
+    <main id="app-container" class="relative w-full max-w-md mx-auto bg-white rounded-2xl shadow-xl p-6 md:p-8 overflow-hidden">
+
+        <!-- 1. Pantalla de Bienvenida -->
+        <div id="welcome-screen" class="screen text-center">
+            <div class="w-full flex justify-center mb-8">
+                <img src="https://raw.githubusercontent.com/daniel-hd-91-mx/in/main/Logo-Dan-Hernandez_Imagotipo-BLACK.png" alt="Logo" class="w-60" onerror="this.style.display='none'">
+            </div>
+            <!-- CAMBIO: Título principal actualizado -->
+            <h1 class="font-serif-display text-3xl md:text-4xl font-bold text-gray-800">¿Qué tan insatisfecho(a) de tu vida estás?</h1>
+            <p class="mt-4 text-gray-600">Una microexperiencia divertida (y reveladora) para saber si estás sobreviviendo, dudando… o disfrutando en serio tu vida.</p>
+            <p class="font-serif-display text-xl text-gray-700 mt-2">Descúbrelo en 2 minutos.</p>
+            <button id="start-btn" class="mt-8 w-full text-center px-6 py-3 rounded-lg shadow-md transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 bg-[#f9442c] text-white font-semibold">
+                Comenzar
+            </button>
+        </div>
+
+        <!-- 2. Pantalla de Captura de Nombre -->
+        <div id="name-screen" class="screen hidden text-center">
+            <h2 class="font-serif-display text-2xl font-bold text-gray-800 mb-4">Primero, ¿cómo te llamas?</h2>
+            <input type="text" id="name-input" placeholder="Tu Nombre" class="mt-6 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f9442c]">
+            <button id="continue-name-btn" class="mt-6 w-full text-center px-6 py-3 rounded-lg shadow-md transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 bg-[#f9442c] text-white font-semibold">Continuar</button>
+        </div>
+
+        <!-- 3. Pantalla de Preguntas -->
+        <div id="question-screen" class="screen hidden">
+            <p id="progress-indicator" class="text-sm font-semibold text-center text-[#f9442c]">Pregunta 1 de 7</p>
+            <h2 id="question-text" class="font-serif-display text-2xl font-bold text-gray-800 mt-4 text-center"></h2>
+            <div id="options-container" class="mt-6 space-y-4">
+                <!-- Opciones se insertan aquí dinámicamente -->
+            </div>
+            <div class="mt-8 text-center">
+                <button id="back-btn" class="text-sm text-gray-500 hover:text-[#f9442c] py-2 px-4 rounded-lg transition-colors">Regresar</button>
+            </div>
+        </div>
+        
+        <!-- Pantalla de Carga -->
+        <div id="loading-screen" class="screen hidden text-center">
+            <div class="flex justify-center items-center">
+                <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div>
+            </div>
+            <h2 class="font-serif-display text-xl font-bold text-gray-800">Analizando tus respuestas…</h2>
+        </div>
+
+
+        <!-- 4. Pantalla de Resultado -->
+        <div id="result-screen" class="screen hidden text-center">
+            <div class="w-full flex justify-center mb-8">
+                <img src="https://raw.githubusercontent.com/daniel-hd-91-mx/in/main/Logo-Dan-Hernandez_Imagotipo-BLACK.png" alt="Logo" class="w-60" onerror="this.style.display='none'">
+            </div>
+            <h1 id="result-title" class="font-serif-display text-3xl font-bold text-[#1f2937]"></h1>
+            <p id="result-text" class="mt-4 text-[#1f2937]"></p>
+            <div id="result-cta-container" class="mt-8 w-full space-y-4"></div>
+            <div class="mt-6 border-t pt-6 space-y-2">
+                <button id="share-btn" class="text-sm font-semibold text-[#f9442c] hover:underline py-2 px-4 rounded-lg transition-colors">Comparte esta App</button>
+                <button id="restart-btn" class="text-sm text-gray-500 hover:text-[#f9442c] py-2 px-4 rounded-lg transition-colors">Reiniciar Test</button>
+            </div>
+            <p id="share-feedback" class="text-sm text-green-600 mt-2 h-5"></p>
+            <p id="disclaimer" class="mt-4 text-xs text-gray-400 italic">Esta app no sustituye una consulta terapéutica ni un diagnóstico clínico. Si atraviesas un momento crítico o tienes pensamientos autodestructivos, busca ayuda profesional urgente.</p>
+        </div>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- MODELO DE DATOS (PREGUNTAS) ---
+            const questions = [
+              {
+                text: "¿Cómo describirías tu ánimo últimamente?",
+                options: [
+                  { text: "Soy un meme viviente de agotamiento existencial.", type: "insatisfaccion-2" },
+                  { text: "Ando en modo ‘piloto automático’.", type: "insatisfaccion-1" },
+                  { text: "Depende del día: lunes tragedia, viernes esperanza.", type: "mixto" },
+                  { text: "Tengo mis bajones, pero los navego bien.", type: "satisfaccion-1" },
+                  { text: "Me siento motivado, con buena energía.", type: "satisfaccion-2" }
+                ]
+              },
+              {
+                text: "¿Cómo te levantas por las mañanas?",
+                options: [
+                  { text: "Con ganas de pedir cinco años más de snooze.", type: "insatisfaccion-2" },
+                  { text: "Con esfuerzo… pero me levanto.", type: "insatisfaccion-1" },
+                  { text: "Un día sí, otro no. Voy viendo.", type: "mixto" },
+                  { text: "Con algo de pereza, pero ya agarré ritmo.", type: "satisfaccion-1" },
+                  { text: "Con ganas de empezar el día y crear algo.", type: "satisfaccion-2" }
+                ]
+              },
+              {
+                text: "¿Qué piensas cuando terminas tu día?",
+                options: [
+                  { text: "¿Y si renuncio a todo y me vuelvo planta?", type: "insatisfaccion-2" },
+                  { text: "Sobreviví, pero no sé si viví.", type: "insatisfaccion-1" },
+                  { text: "Un día raro, pero aprendí algo.", type: "mixto" },
+                  { text: "Cansado, pero satisfecho con lo hecho.", type: "satisfaccion-1" },
+                  { text: "¡Buen día! Estoy avanzando como quiero.", type: "satisfaccion-2" }
+                ]
+              },
+              {
+                text: "¿Qué tan seguido te sientes desenfocado o perdido?",
+                options: [
+                  { text: "Como 24/7, pero con estilo.", type: "insatisfaccion-2" },
+                  { text: "Una parte de mí está trabajando; la otra... flotando.", type: "insatisfaccion-1" },
+                  { text: "Hay días de claridad y otros de caos.", type: "mixto" },
+                  { text: "A veces me desenfoco, pero sé reconectar.", type: "satisfaccion-1" },
+                  { text: "Sé adónde voy y disfruto el camino.", type: "satisfaccion-2" }
+                ]
+              },
+              {
+                text: "Si tu mente fuera una ciudad, sería…",
+                options: [
+                  { text: "Caoslandia: sin ley, sin luz, sin señal.", type: "insatisfaccion-2" },
+                  { text: "Tráfico lento, pero avanza.", type: "insatisfaccion-1" },
+                  { text: "Una mezcla entre parque y zona de construcción.", type: "mixto" },
+                  { text: "Ciudad funcional con sus días de lluvia.", type: "satisfaccion-1" },
+                  { text: "Creatópolis: orden, flow y buena vibra.", type: "satisfaccion-2" }
+                ]
+              },
+              {
+                text: "¿Cómo está tu energía para tomar decisiones importantes?",
+                options: [
+                  { text: "¿Puedo no decidir nada hasta nuevo aviso?", type: "insatisfaccion-2" },
+                  { text: "Decido, pero con miedo y dudas.", type: "insatisfaccion-1" },
+                  { text: "Estoy entre el ‘sí’ y el ‘mejor luego’.", type: "mixto" },
+                  { text: "Lo pienso, me tardo, pero lo hago.", type: "satisfaccion-1" },
+                  { text: "Decido con confianza, incluso si me equivoco.", type: "satisfaccion-2" }
+                ]
+              },
+              {
+                text: "¿Qué título tendría tu serie actual?",
+                options: [
+                  { text: "Burnout: la serie.", type: "insatisfaccion-2" },
+                  { text: "Buscando sentido en tiempos modernos.", type: "insatisfaccion-1" },
+                  { text: "Drama, comedia y un poco de suspenso.", type: "mixto" },
+                  { text: "Protagonista en reconstrucción.", type: "satisfaccion-1" },
+                  { text: "Modo protagonista activado.", type: "satisfaccion-2" }
+                ]
+              }
+            ];
+
+            // --- ESTADO DE LA APLICACIÓN ---
+            let currentQuestionIndex = 0;
+            let userName = '';
+            let userAnswers = new Array(questions.length).fill(null);
+
+            // --- REFERENCIAS AL DOM ---
+            const screens = {
+                welcome: document.getElementById('welcome-screen'),
+                name: document.getElementById('name-screen'),
+                question: document.getElementById('question-screen'),
+                loading: document.getElementById('loading-screen'),
+                result: document.getElementById('result-screen'),
+            };
+
+            const elements = {
+                startBtn: document.getElementById('start-btn'),
+                nameInput: document.getElementById('name-input'),
+                continueNameBtn: document.getElementById('continue-name-btn'),
+                progressIndicator: document.getElementById('progress-indicator'),
+                questionText: document.getElementById('question-text'),
+                optionsContainer: document.getElementById('options-container'),
+                backBtn: document.getElementById('back-btn'),
+                resultTitle: document.getElementById('result-title'),
+                resultText: document.getElementById('result-text'),
+                resultCtaContainer: document.getElementById('result-cta-container'),
+                restartBtn: document.getElementById('restart-btn'),
+                shareBtn: document.getElementById('share-btn'),
+                shareFeedback: document.getElementById('share-feedback'),
+            };
+            
+            // --- LÓGICA DE LA APLICACIÓN ---
+
+            function resetApp() {
+                currentQuestionIndex = 0;
+                userAnswers = new Array(questions.length).fill(null);
+                userName = '';
+                elements.nameInput.value = '';
+                elements.shareFeedback.textContent = '';
+                showScreen('welcome');
+            }
+
+            function showScreen(screenKey) {
+                Object.values(screens).forEach(screen => screen.classList.add('hidden'));
+                if (screens[screenKey]) {
+                    screens[screenKey].classList.remove('hidden');
+                }
+            }
+
+            function displayQuestion() {
+                elements.backBtn.style.visibility = currentQuestionIndex > 0 ? 'visible' : 'hidden';
+                
+                const question = questions[currentQuestionIndex];
+                elements.progressIndicator.textContent = `Pregunta ${currentQuestionIndex + 1} de ${questions.length}`;
+                elements.questionText.textContent = question.text;
+                elements.optionsContainer.innerHTML = '';
+
+                question.options.forEach((option, index) => {
+                    const optionId = `option-${currentQuestionIndex}-${index}`;
+                    const optionWrapper = document.createElement('div');
+                    const radioInput = document.createElement('input');
+                    radioInput.type = 'radio';
+                    radioInput.name = `question-option-${currentQuestionIndex}`;
+                    radioInput.value = option.type;
+                    radioInput.id = optionId;
+                    radioInput.className = 'hidden';
+
+                    if (userAnswers[currentQuestionIndex] === option.type) {
+                        radioInput.checked = true;
+                    }
+
+                    const label = document.createElement('label');
+                    label.htmlFor = optionId;
+                    label.textContent = option.text;
+                    label.className = 'block w-full text-center px-6 py-3 rounded-lg shadow-md transition-all duration-200 cursor-pointer bg-white text-gray-700 border border-gray-300 hover:bg-gray-100';
+                    
+                    if (radioInput.checked) {
+                        label.classList.add('bg-[#f9442c]', 'text-white', 'border-transparent', 'ring-2', 'ring-offset-2', 'ring-[#f9442c]', 'transform', 'scale-105');
+                        label.classList.remove('bg-white', 'text-gray-700', 'border-gray-300');
+                    }
+
+                    radioInput.addEventListener('change', () => {
+                        userAnswers[currentQuestionIndex] = radioInput.value;
+
+                        const allLabels = elements.optionsContainer.querySelectorAll('label');
+                        allLabels.forEach(lbl => {
+                            lbl.classList.remove('bg-[#f9442c]', 'text-white', 'border-transparent', 'ring-2', 'ring-offset-2', 'ring-[#f9442c]', 'transform', 'scale-105');
+                            lbl.classList.add('bg-white', 'text-gray-700', 'border-gray-300');
+                        });
+                        label.classList.add('bg-[#f9442c]', 'text-white', 'border-transparent', 'ring-2', 'ring-offset-2', 'ring-[#f9442c]', 'transform', 'scale-105');
+                        label.classList.remove('bg-white', 'text-gray-700', 'border-gray-300');
+                        
+                        setTimeout(() => {
+                            currentQuestionIndex++;
+                            if (currentQuestionIndex < questions.length) {
+                                displayQuestion();
+                            } else {
+                                showResult();
+                            }
+                        }, 400);
+                    });
+
+                    optionWrapper.appendChild(radioInput);
+                    optionWrapper.appendChild(label);
+                    elements.optionsContainer.appendChild(optionWrapper);
+                });
+            }
+            
+            function showResult() {
+                showScreen('loading');
+
+                let scores = { insatisfaccion: 0, satisfaccion: 0, mixto: 0 };
+                userAnswers.forEach(answer => {
+                    if (answer) {
+                        const parts = answer.split('-');
+                        const category = parts[0];
+                        if (category === 'insatisfaccion') {
+                            scores.insatisfaccion += parseInt(parts[1], 10);
+                        } else if (category === 'satisfaccion') {
+                            scores.satisfaccion += parseInt(parts[1], 10);
+                        } else if (category === 'mixto') {
+                            scores.mixto += 1;
+                        }
+                    }
+                });
+
+                setTimeout(() => {
+                    let resultType;
+                    if (scores.insatisfaccion >= 10) {
+                      resultType = 'alta';
+                    } else if (scores.insatisfaccion >= 6) {
+                      resultType = 'media';
+                    } else if (scores.mixto >= 2) {
+                      resultType = 'mixto';
+                    } else if (scores.satisfaccion >= 8) {
+                      resultType = 'alta-satisfaccion';
+                    } else {
+                      resultType = 'funcional';
+                    }
+
+                    const namePrefix = userName ? `${userName}, ` : '';
+
+                    const resultsData = {
+                        alta: {
+                            title: `${namePrefix}esto no es solo cansancio.`,
+                            text: "Lo que estás sintiendo va más allá de una mala racha. Es momento de priorizarte. Un acompañamiento profesional puede ayudarte a entender, soltar y reconectar contigo.",
+                            ctas: [{ text: "Explorar un acompañamiento", link: "https://linktr.ee/coach.danhd" }]
+                        },
+                        media: {
+                            title: `Estás funcionando... pero ¿a qué costo?`,
+                            text: "Vas cumpliendo con lo de fuera, pero por dentro algo pide cambio. Este puede ser un gran momento para frenar, reflexionar y reconfigurar.",
+                            ctas: [{ text: "Comienza Aquí", link: "https://linktr.ee/coach.danhd" }]
+                        },
+                        mixto: {
+                            title: `Estás entre lo que ya no… y lo que aún no es.`,
+                            text: "Sientes que algo tiene que cambiar, pero no es del todo claro qué. Este tipo de etapa es perfecta para un acompañamiento que combine claridad y escucha.",
+                            ctas: [{ text: "Explorar tu siguiente paso", link: "https://linktr.ee/coach.danhd" }]
+                        },
+                        funcional: {
+                            title: `Vas bien, aunque podrías ir aún mejor.`,
+                            text: "Tienes buen equilibrio, pero podrías sacar más provecho a tu energía. A veces, no es cuestión de corregir, sino de afinar.",
+                            ctas: [{ text: "Ver ideas para mejorar", link: "https://linktr.ee/coach.danhd" }]
+                        },
+                        'alta-satisfaccion': {
+                            title: `¡Se nota que estás en tu elemento!`,
+                            text: "Estás viviendo con intención, foco y satisfacción. Si alguna vez sientes que algo se desbalancea, aquí estaremos.",
+                            ctas: [{ text: "Compartir esta app con alguien", share: true }]
+                        }
+                    };
+                    
+                    const finalResult = resultsData[resultType];
+                    elements.resultTitle.textContent = finalResult.title;
+                    elements.resultText.textContent = finalResult.text;
+                    
+                    elements.resultCtaContainer.innerHTML = '';
+
+                    finalResult.ctas.forEach(cta => {
+                        const button = document.createElement('button');
+                        button.textContent = cta.text;
+                        button.className = 'w-full text-center px-6 py-3 rounded-lg shadow-md transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 bg-[#f9442c] text-white font-semibold';
+                        
+                        if (cta.share) {
+                            button.addEventListener('click', shareApp);
+                        } else {
+                            button.dataset.link = cta.link;
+                            button.addEventListener('click', () => {
+                                const link = button.dataset.link;
+                                if (link) {
+                                    window.open(link, '_blank');
+                                }
+                            });
+                        }
+                        elements.resultCtaContainer.appendChild(button);
+                    });
+
+                    showScreen('result');
+                }, 1500);
+            }
+
+            async function shareApp() {
+                const shareData = {
+                    title: '¿Estás bien… o solo funcionando?',
+                    text: 'Descubre si estás sobreviviendo o disfrutando en serio tu vida con esta app.',
+                    url: 'https://tr.ee/GTbI3m'
+                };
+                try {
+                    if (navigator.share) {
+                        await navigator.share(shareData);
+                        elements.shareFeedback.textContent = '¡Gracias por compartir!';
+                    } else {
+                        throw new Error('Share API not supported');
+                    }
+                } catch (err) {
+                    try {
+                        const textArea = document.createElement('textarea');
+                        textArea.value = shareData.url;
+                        document.body.appendChild(textArea);
+                        textArea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textArea);
+                        elements.shareFeedback.textContent = '¡Enlace copiado al portapapeles!';
+                    } catch (copyErr) {
+                        elements.shareFeedback.textContent = 'No se pudo compartir o copiar.';
+                    }
+                }
+                setTimeout(() => {
+                    elements.shareFeedback.textContent = '';
+                }, 3000);
+            }
+
+            // --- EVENT LISTENERS ---
+
+            elements.startBtn.addEventListener('click', () => {
+                showScreen('name');
+            });
+
+            elements.continueNameBtn.addEventListener('click', () => {
+                userName = elements.nameInput.value.trim();
+                showScreen('question');
+                displayQuestion();
+            });
+
+            elements.backBtn.addEventListener('click', () => {
+                if (currentQuestionIndex > 0) {
+                    currentQuestionIndex--;
+                    userAnswers[currentQuestionIndex] = null;
+                    displayQuestion();
+                }
+            });
+
+            elements.restartBtn.addEventListener('click', () => {
+                resetApp();
+            });
+
+            elements.shareBtn.addEventListener('click', shareApp);
+
+            // --- INICIALIZACIÓN ---
+            showScreen('welcome');
+        });
+    </script>
+</body>
+</html>
