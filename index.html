@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- CAMBIO: Título de la pestaña actualizado -->
-    <title>¿Qué tan insatisfecho(a) de tu vida estás?</title>
+    <title>¿Vives… o solo sobrevives?</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -55,18 +54,16 @@
             <div class="w-full flex justify-center mb-8">
                 <img src="https://raw.githubusercontent.com/daniel-hd-91-mx/in/main/Logo-Dan-Hernandez_Imagotipo-BLACK.png" alt="Logo" class="w-60" onerror="this.style.display='none'">
             </div>
-            <!-- CAMBIO: Título principal actualizado -->
-            <h1 class="font-serif-display text-3xl md:text-4xl font-bold text-gray-800">¿Qué tan insatisfecho(a) de tu vida estás?</h1>
-            <p class="mt-4 text-gray-600">Una microexperiencia divertida (y reveladora) para saber si estás sobreviviendo, dudando… o disfrutando en serio tu vida.</p>
-            <p class="font-serif-display text-xl text-gray-700 mt-2">Descúbrelo en 2 minutos.</p>
+            <h1 class="font-serif-display text-3xl md:text-4xl font-bold text-gray-800">¿Vives… o solo sobrevives?</h1>
+            <p class="mt-4 text-gray-600">En 2 minutos sabrás tu nivel de satisfacción real y el siguiente paso para avanzar. Rápido, claro y revelador.</p>
             <button id="start-btn" class="mt-8 w-full text-center px-6 py-3 rounded-lg shadow-md transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 bg-[#f9442c] text-white font-semibold">
-                Comenzar
+                Comenzar ahora
             </button>
         </div>
 
         <!-- 2. Pantalla de Captura de Nombre -->
         <div id="name-screen" class="screen hidden text-center">
-            <h2 class="font-serif-display text-2xl font-bold text-gray-800 mb-4">Primero, ¿cómo te llamas?</h2>
+            <h2 class="font-serif-display text-2xl font-bold text-gray-800 mb-4">¿Cómo te llamas?</h2>
             <input type="text" id="name-input" placeholder="Tu Nombre" class="mt-6 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f9442c]">
             <button id="continue-name-btn" class="mt-6 w-full text-center px-6 py-3 rounded-lg shadow-md transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 bg-[#f9442c] text-white font-semibold">Continuar</button>
         </div>
@@ -105,7 +102,17 @@
                 <button id="restart-btn" class="text-sm text-gray-500 hover:text-[#f9442c] py-2 px-4 rounded-lg transition-colors">Reiniciar Test</button>
             </div>
             <p id="share-feedback" class="text-sm text-green-600 mt-2 h-5"></p>
-            <p id="disclaimer" class="mt-4 text-xs text-gray-400 italic">Esta app no sustituye una consulta terapéutica ni un diagnóstico clínico. Si atraviesas un momento crítico o tienes pensamientos autodestructivos, busca ayuda profesional urgente.</p>
+            <p id="disclaimer" class="mt-4 text-xs text-gray-400 italic">Esta app no sustituye una consulta terapéutica ni un diagnóstico clínico. Si atraviesas una crisis o tienes pensamientos autodestructivos, busca ayuda profesional urgente.</p>
+        </div>
+        
+        <!-- 5. Pantalla de Elección de Acompañamiento -->
+        <div id="accompaniment-choice-screen" class="screen hidden text-center">
+            <!-- Contenido se insertará dinámicamente -->
+        </div>
+
+        <!-- 6. Pantalla de Elección de Origen del Desgaste -->
+        <div id="desgaste-origin-screen" class="screen hidden text-center">
+            <!-- Contenido se insertará dinámicamente -->
         </div>
 
     </main>
@@ -115,74 +122,74 @@
             // --- MODELO DE DATOS (PREGUNTAS) ---
             const questions = [
               {
-                text: "¿Cómo describirías tu ánimo últimamente?",
-                options: [
-                  { text: "Soy un meme viviente de agotamiento existencial.", type: "insatisfaccion-2" },
-                  { text: "Ando en modo ‘piloto automático’.", type: "insatisfaccion-1" },
-                  { text: "Depende del día: lunes tragedia, viernes esperanza.", type: "mixto" },
-                  { text: "Tengo mis bajones, pero los navego bien.", type: "satisfaccion-1" },
-                  { text: "Me siento motivado, con buena energía.", type: "satisfaccion-2" }
-                ]
+                  text: "¿Cómo describirías tu ánimo últimamente?",
+                  options: [
+                      { text: "Soy un meme viviente de agotamiento existencial.", type: "insatisfaccion-2" },
+                      { text: "Ando en modo ‘piloto automático’.", type: "insatisfaccion-1" },
+                      { text: "Depende del día: lunes tragedia, viernes esperanza.", type: "mixto" },
+                      { text: "Tengo mis bajones, pero los navego bien.", type: "satisfaccion-1" },
+                      { text: "Me siento motivado, con buena energía.", type: "satisfaccion-2" }
+                  ]
               },
               {
-                text: "¿Cómo te levantas por las mañanas?",
-                options: [
-                  { text: "Con ganas de pedir cinco años más de snooze.", type: "insatisfaccion-2" },
-                  { text: "Con esfuerzo… pero me levanto.", type: "insatisfaccion-1" },
-                  { text: "Un día sí, otro no. Voy viendo.", type: "mixto" },
-                  { text: "Con algo de pereza, pero ya agarré ritmo.", type: "satisfaccion-1" },
-                  { text: "Con ganas de empezar el día y crear algo.", type: "satisfaccion-2" }
-                ]
+                  text: "¿Cómo te levantas por las mañanas?",
+                  options: [
+                      { text: "Con ganas de pedir cinco años más de snooze.", type: "insatisfaccion-2" },
+                      { text: "Con esfuerzo… pero me levanto.", type: "insatisfaccion-1" },
+                      { text: "Un día sí, otro no. Voy viendo.", type: "mixto" },
+                      { text: "Con algo de pereza, pero ya agarré ritmo.", type: "satisfaccion-1" },
+                      { text: "Con ganas de empezar el día y crear algo.", type: "satisfaccion-2" }
+                  ]
               },
               {
-                text: "¿Qué piensas cuando terminas tu día?",
-                options: [
-                  { text: "¿Y si renuncio a todo y me vuelvo planta?", type: "insatisfaccion-2" },
-                  { text: "Sobreviví, pero no sé si viví.", type: "insatisfaccion-1" },
-                  { text: "Un día raro, pero aprendí algo.", type: "mixto" },
-                  { text: "Cansado, pero satisfecho con lo hecho.", type: "satisfaccion-1" },
-                  { text: "¡Buen día! Estoy avanzando como quiero.", type: "satisfaccion-2" }
-                ]
+                  text: "¿Qué piensas cuando terminas tu día?",
+                  options: [
+                      { text: "¿Y si renuncio a todo y me vuelvo planta?", type: "insatisfaccion-2" },
+                      { text: "Sobreviví, pero no sé si viví.", type: "insatisfaccion-1" },
+                      { text: "Un día raro, pero aprendí algo.", type: "mixto" },
+                      { text: "Cansado, pero satisfecho con lo hecho.", type: "satisfaccion-1" },
+                      { text: "¡Buen día! Estoy avanzando como quiero.", type: "satisfaccion-2" }
+                  ]
               },
               {
-                text: "¿Qué tan seguido te sientes desenfocado o perdido?",
-                options: [
-                  { text: "Como 24/7, pero con estilo.", type: "insatisfaccion-2" },
-                  { text: "Una parte de mí está trabajando; la otra... flotando.", type: "insatisfaccion-1" },
-                  { text: "Hay días de claridad y otros de caos.", type: "mixto" },
-                  { text: "A veces me desenfoco, pero sé reconectar.", type: "satisfaccion-1" },
-                  { text: "Sé adónde voy y disfruto el camino.", type: "satisfaccion-2" }
-                ]
+                  text: "¿Qué tan seguido te sientes desenfocado o perdido?",
+                  options: [
+                      { text: "Como 24/7, pero con estilo.", type: "insatisfaccion-2" },
+                      { text: "Una parte de mí está trabajando; la otra... flotando.", type: "insatisfaccion-1" },
+                      { text: "Hay días de claridad y otros de caos.", type: "mixto" },
+                      { text: "A veces me desenfoco, pero sé reconectar.", type: "satisfaccion-1" },
+                      { text: "Sé adónde voy y disfruto el camino.", type: "satisfaccion-2" }
+                  ]
               },
               {
-                text: "Si tu mente fuera una ciudad, sería…",
-                options: [
-                  { text: "Caoslandia: sin ley, sin luz, sin señal.", type: "insatisfaccion-2" },
-                  { text: "Tráfico lento, pero avanza.", type: "insatisfaccion-1" },
-                  { text: "Una mezcla entre parque y zona de construcción.", type: "mixto" },
-                  { text: "Ciudad funcional con sus días de lluvia.", type: "satisfaccion-1" },
-                  { text: "Creatópolis: orden, flow y buena vibra.", type: "satisfaccion-2" }
-                ]
+                  text: "Si tu mente fuera una ciudad, sería…",
+                  options: [
+                      { text: "Caoslandia: sin ley, sin luz, sin señal.", type: "insatisfaccion-2" },
+                      { text: "Tráfico lento, pero avanza.", type: "insatisfaccion-1" },
+                      { text: "Una mezcla entre parque y zona de construcción.", type: "mixto" },
+                      { text: "Ciudad funcional con sus días de lluvia.", type: "satisfaccion-1" },
+                      { text: "Creatópolis: orden, flow y buena vibra.", type: "satisfaccion-2" }
+                  ]
               },
               {
-                text: "¿Cómo está tu energía para tomar decisiones importantes?",
-                options: [
-                  { text: "¿Puedo no decidir nada hasta nuevo aviso?", type: "insatisfaccion-2" },
-                  { text: "Decido, pero con miedo y dudas.", type: "insatisfaccion-1" },
-                  { text: "Estoy entre el ‘sí’ y el ‘mejor luego’.", type: "mixto" },
-                  { text: "Lo pienso, me tardo, pero lo hago.", type: "satisfaccion-1" },
-                  { text: "Decido con confianza, incluso si me equivoco.", type: "satisfaccion-2" }
-                ]
+                  text: "¿Cómo está tu energía para tomar decisiones importantes?",
+                  options: [
+                      { text: "¿Puedo no decidir nada hasta nuevo aviso?", type: "insatisfaccion-2" },
+                      { text: "Decido, pero con miedo y dudas.", type: "insatisfaccion-1" },
+                      { text: "Estoy entre el ‘sí’ y el ‘mejor luego’.", type: "mixto" },
+                      { text: "Lo pienso, me tardo, pero lo hago.", type: "satisfaccion-1" },
+                      { text: "Decido con confianza, incluso si me equivoco.", type: "satisfaccion-2" }
+                  ]
               },
               {
-                text: "¿Qué título tendría tu serie actual?",
-                options: [
-                  { text: "Burnout: la serie.", type: "insatisfaccion-2" },
-                  { text: "Buscando sentido en tiempos modernos.", type: "insatisfaccion-1" },
-                  { text: "Drama, comedia y un poco de suspenso.", type: "mixto" },
-                  { text: "Protagonista en reconstrucción.", type: "satisfaccion-1" },
-                  { text: "Modo protagonista activado.", type: "satisfaccion-2" }
-                ]
+                  text: "¿Qué título tendría tu serie actual?",
+                  options: [
+                      { text: "Burnout: la serie.", type: "insatisfaccion-2" },
+                      { text: "Buscando sentido en tiempos modernos.", type: "insatisfaccion-1" },
+                      { text: "Drama, comedia y un poco de suspenso.", type: "mixto" },
+                      { text: "Protagonista en reconstrucción.", type: "satisfaccion-1" },
+                      { text: "Modo protagonista activado.", type: "satisfaccion-2" }
+                  ]
               }
             ];
 
@@ -198,6 +205,8 @@
                 question: document.getElementById('question-screen'),
                 loading: document.getElementById('loading-screen'),
                 result: document.getElementById('result-screen'),
+                accompanimentChoice: document.getElementById('accompaniment-choice-screen'),
+                desgasteOrigin: document.getElementById('desgaste-origin-screen'),
             };
 
             const elements = {
@@ -217,6 +226,74 @@
             };
             
             // --- LÓGICA DE LA APLICACIÓN ---
+
+            // 1) Helper: bloque de progresión con barra
+            function buildProgressionBlock(resultType) {
+                const wrap = document.createElement('div');
+                wrap.className = 'mt-6 text-left bg-gray-50 border border-gray-200 rounded-xl p-4 space-y-3';
+
+                // Determinar propiedades de la barra según el tipo de resultado
+                let barWidthClass = 'w-0';
+                let barColorClass = 'bg-gray-400';
+                let barLabel = '';
+
+                switch (resultType) {
+                    case 'alta':
+                        barWidthClass = 'w-11/12';
+                        barColorClass = 'bg-red-500';
+                        barLabel = 'Muy Alto';
+                        break;
+                    case 'media':
+                        barWidthClass = 'w-2/3';
+                        barColorClass = 'bg-yellow-500';
+                        barLabel = 'Medio';
+                        break;
+                    case 'mixto':
+                        barWidthClass = 'w-1/2';
+                        barColorClass = 'bg-yellow-500';
+                        barLabel = 'Medio';
+                        break;
+                    case 'funcional':
+                        barWidthClass = 'w-1/3';
+                        barColorClass = 'bg-green-500';
+                        barLabel = 'Bajo';
+                        break;
+                }
+
+                wrap.innerHTML = `
+                <p class="font-serif-display font-bold text-gray-800">Tu nivel de insatisfacción es una brújula.</p>
+                
+                <!-- Barra de Progreso -->
+                <div>
+                    <div class="flex justify-between mb-1">
+                    <span class="text-xs font-semibold text-gray-600">${barLabel}</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div class="${barColorClass} h-2.5 rounded-full transition-all duration-500 ease-out ${barWidthClass}"></div>
+                    </div>
+                </div>
+
+                <p class="text-gray-700 mt-2 font-semibold">Siguiente paso:</p>
+                <ul class="list-disc pl-5 text-gray-700">
+                    <li>Descubre de dónde viene tu desgaste.</li>
+                    <li>Elige el acompañamiento que te hará avanzar.</li>
+                </ul>
+                `;
+                return wrap;
+            }
+
+            // 2) Helper: botón genérico
+            function buildCTA(text, link, opts = {}) {
+                const btn = document.createElement('button');
+                btn.textContent = text;
+                btn.className = 'w-full text-center px-6 py-3 rounded-lg shadow-md transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 bg-[#f9442c] text-white font-semibold';
+                if (opts.share) {
+                    btn.addEventListener('click', shareApp);
+                } else {
+                    btn.addEventListener('click', () => window.open(link, '_blank'));
+                }
+                return btn;
+            }
 
             function resetApp() {
                 currentQuestionIndex = 0;
@@ -293,92 +370,192 @@
                 });
             }
             
+            function displayDesgasteOriginChoices() {
+                const container = screens.desgasteOrigin;
+                container.innerHTML = ''; // Clear previous content
+
+                const logoContainer = document.createElement('div');
+                logoContainer.className = 'w-full flex justify-center mb-6';
+                logoContainer.innerHTML = `<img src="https://raw.githubusercontent.com/daniel-hd-91-mx/in/main/Logo-Dan-Hernandez_Imagotipo-BLACK.png" alt="Logo" class="w-[150px]" onerror="this.style.display='none'">`;
+                container.appendChild(logoContainer);
+
+                const title = document.createElement('h2');
+                title.className = 'font-serif-display text-2xl font-bold text-gray-800 mb-6 text-center';
+                title.textContent = '¿De dónde viene tu desgaste?';
+                container.appendChild(title);
+
+                const buttonContainer = document.createElement('div');
+                buttonContainer.className = 'space-y-6';
+
+                // Opción 1: Desgaste Profesional/Laboral
+                const option1 = document.createElement('div');
+                const desc1 = document.createElement('p');
+                desc1.className = 'text-gray-600 text-sm mb-2';
+                desc1.textContent = 'Si viene del trabajo, un diagnóstico claro te ayudará a actuar con precisión. El test dura 20 minutos y entrega un informe personalizado.';
+                option1.appendChild(desc1);
+                option1.appendChild(
+                    buildCTA('Quiero evaluar si mi desgaste es profesional o laboral', 'https://tr.ee/7TMw7Q')
+                );
+                buttonContainer.appendChild(option1);
+
+                // Opción 2: Desgaste de Otras Áreas
+                const option2 = document.createElement('div');
+                const desc2 = document.createElement('p');
+                desc2.className = 'text-gray-600 text-sm mb-2';
+                desc2.textContent = 'Si es de otras áreas, detecta qué drena tu energía antes de que afecte lo demás. La app interactiva dura 5 minutos.';
+                option2.appendChild(desc2);
+                option2.appendChild(
+                    buildCTA('Quiero evaluar si mi desgaste viene de otras áreas de mi vida', 'https://tr.ee/X79xfz')
+                );
+                buttonContainer.appendChild(option2);
+
+                container.appendChild(buttonContainer);
+
+                const backButtonContainer = document.createElement('div');
+                backButtonContainer.className = 'mt-8 text-center';
+                const backBtn = document.createElement('button');
+                backBtn.className = 'text-sm text-gray-500 hover:text-[#f9442c] py-2 px-4 rounded-lg transition-colors';
+                backBtn.textContent = 'Regresar';
+                backBtn.addEventListener('click', () => showScreen('result'));
+                backButtonContainer.appendChild(backBtn);
+                container.appendChild(backButtonContainer);
+
+                showScreen('desgasteOrigin');
+            }
+
+            function displayAccompanimentChoices() {
+                const container = screens.accompanimentChoice;
+                container.innerHTML = ''; // Clear previous content
+
+                const logoContainer = document.createElement('div');
+                logoContainer.className = 'w-full flex justify-center mb-6';
+                logoContainer.innerHTML = `<img src="https://raw.githubusercontent.com/daniel-hd-91-mx/in/main/Logo-Dan-Hernandez_Imagotipo-BLACK.png" alt="Logo" class="w-[150px]" onerror="this.style.display='none'">`;
+                container.appendChild(logoContainer);
+
+                const title = document.createElement('h2');
+                title.className = 'font-serif-display text-2xl font-bold text-gray-800 mb-6 text-center';
+                title.textContent = 'Descubre tu Acompañamiento Ideal';
+                container.appendChild(title);
+
+                const buttonContainer = document.createElement('div');
+                buttonContainer.className = 'space-y-6';
+
+                // Opción 1: Terapia o Coaching
+                const option1 = document.createElement('div');
+                const desc1 = document.createElement('p');
+                desc1.className = 'text-gray-600 text-sm mb-2';
+                desc1.textContent = 'Tu desmotivación puede venir de desenfoque… o de un dolor emocional profundo. Descubre si necesitas sanar y reordenar, o claridad para reconectar. El test interactivo dura 2 minutos.';
+                option1.appendChild(desc1);
+                option1.appendChild(
+                    buildCTA('Quiero saber si necesito Terapia o Coaching', 'https://tr.ee/jSDe8L')
+                );
+                buttonContainer.appendChild(option1);
+
+                // Opción 2: Consultoría, Mentoría o Coaching
+                const option2 = document.createElement('div');
+                const desc2 = document.createElement('p');
+                desc2.className = 'text-gray-600 text-sm mb-2';
+                desc2.textContent = 'Sabes a dónde ir, pero estás desorientado. Identifica si requieres una guía paso a paso, la experiencia de alguien que ya lo logró o coaching para ejecutar. El test interactivo dura 2 minutos.';
+                option2.appendChild(desc2);
+                option2.appendChild(
+                    buildCTA('Quiero saber si necesito Consultoría, Mentoría o Coaching', 'https://tr.ee/iUvTFB')
+                );
+                buttonContainer.appendChild(option2);
+                
+                container.appendChild(buttonContainer);
+
+                const backButtonContainer = document.createElement('div');
+                backButtonContainer.className = 'mt-8 text-center';
+                const backBtn = document.createElement('button');
+                backBtn.className = 'text-sm text-gray-500 hover:text-[#f9442c] py-2 px-4 rounded-lg transition-colors';
+                backBtn.textContent = 'Regresar';
+                backBtn.addEventListener('click', () => showScreen('result'));
+                backButtonContainer.appendChild(backBtn);
+                container.appendChild(backButtonContainer);
+
+                showScreen('accompanimentChoice');
+            }
+
             function showResult() {
                 showScreen('loading');
 
                 let scores = { insatisfaccion: 0, satisfaccion: 0, mixto: 0 };
                 userAnswers.forEach(answer => {
-                    if (answer) {
-                        const parts = answer.split('-');
-                        const category = parts[0];
-                        if (category === 'insatisfaccion') {
-                            scores.insatisfaccion += parseInt(parts[1], 10);
-                        } else if (category === 'satisfaccion') {
-                            scores.satisfaccion += parseInt(parts[1], 10);
-                        } else if (category === 'mixto') {
-                            scores.mixto += 1;
-                        }
-                    }
+                    if (!answer) return;
+                    const [category, weight] = answer.split('-');
+                    if (category === 'insatisfaccion') scores.insatisfaccion += parseInt(weight, 10);
+                    else if (category === 'satisfaccion') scores.satisfaccion += parseInt(weight, 10);
+                    else if (category === 'mixto') scores.mixto += 1;
                 });
 
                 setTimeout(() => {
                     let resultType;
-                    if (scores.insatisfaccion >= 10) {
-                      resultType = 'alta';
-                    } else if (scores.insatisfaccion >= 6) {
-                      resultType = 'media';
-                    } else if (scores.mixto >= 2) {
-                      resultType = 'mixto';
-                    } else if (scores.satisfaccion >= 8) {
-                      resultType = 'alta-satisfaccion';
-                    } else {
-                      resultType = 'funcional';
-                    }
+                    if (scores.insatisfaccion >= 10) resultType = 'alta';
+                    else if (scores.insatisfaccion >= 6) resultType = 'media';
+                    else if (scores.mixto >= 2) resultType = 'mixto';
+                    else if (scores.satisfaccion >= 8) resultType = 'alta-satisfaccion';
+                    else resultType = 'funcional';
 
                     const namePrefix = userName ? `${userName}, ` : '';
 
                     const resultsData = {
                         alta: {
                             title: `${namePrefix}esto no es solo cansancio.`,
-                            text: "Lo que estás sintiendo va más allá de una mala racha. Es momento de priorizarte. Un acompañamiento profesional puede ayudarte a entender, soltar y reconectar contigo.",
-                            ctas: [{ text: "Explorar un acompañamiento", link: "https://linktr.ee/coach.danhd" }]
+                            text: "Es momento de priorizarte y buscar apoyo profesional para entender, soltar y reconectar.",
                         },
                         media: {
-                            title: `Estás funcionando... pero ¿a qué costo?`,
-                            text: "Vas cumpliendo con lo de fuera, pero por dentro algo pide cambio. Este puede ser un gran momento para frenar, reflexionar y reconfigurar.",
-                            ctas: [{ text: "Comienza Aquí", link: "https://linktr.ee/coach.danhd" }]
+                            title: `Estás funcionando… pero por dentro algo pide cambio.`,
+                            text: "Este es buen momento para frenar y reconfigurar.",
                         },
                         mixto: {
                             title: `Estás entre lo que ya no… y lo que aún no es.`,
-                            text: "Sientes que algo tiene que cambiar, pero no es del todo claro qué. Este tipo de etapa es perfecta para un acompañamiento que combine claridad y escucha.",
-                            ctas: [{ text: "Explorar tu siguiente paso", link: "https://linktr.ee/coach.danhd" }]
+                            text: "Necesitas claridad y escucha para encontrar tu dirección.",
                         },
                         funcional: {
-                            title: `Vas bien, aunque podrías ir aún mejor.`,
-                            text: "Tienes buen equilibrio, pero podrías sacar más provecho a tu energía. A veces, no es cuestión de corregir, sino de afinar.",
-                            ctas: [{ text: "Ver ideas para mejorar", link: "https://linktr.ee/coach.danhd" }]
+                            title: `Vas bien, pero podrías aprovechar más tu energía.`,
+                            text: "A veces solo hay que afinar.",
                         },
                         'alta-satisfaccion': {
-                            title: `¡Se nota que estás en tu elemento!`,
-                            text: "Estás viviendo con intención, foco y satisfacción. Si alguna vez sientes que algo se desbalancea, aquí estaremos.",
+                            title: `¡Estás en tu elemento!`,
+                            text: "Si algo se desbalancea, aquí estaremos.",
                             ctas: [{ text: "Compartir esta app con alguien", share: true }]
                         }
                     };
-                    
+
                     const finalResult = resultsData[resultType];
                     elements.resultTitle.textContent = finalResult.title;
                     elements.resultText.textContent = finalResult.text;
-                    
+
+                    // Limpia contenedor
                     elements.resultCtaContainer.innerHTML = '';
 
-                    finalResult.ctas.forEach(cta => {
-                        const button = document.createElement('button');
-                        button.textContent = cta.text;
-                        button.className = 'w-full text-center px-6 py-3 rounded-lg shadow-md transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 bg-[#f9442c] text-white font-semibold';
-                        
-                        if (cta.share) {
-                            button.addEventListener('click', shareApp);
-                        } else {
-                            button.dataset.link = cta.link;
-                            button.addEventListener('click', () => {
-                                const link = button.dataset.link;
-                                if (link) {
-                                    window.open(link, '_blank');
-                                }
+                    // Inserta bloque de progresión y botones (excepto en alta-satisfaccion)
+                    if (resultType !== 'alta-satisfaccion') {
+                        elements.resultCtaContainer.appendChild(buildProgressionBlock(resultType));
+
+                        // Botón: Descubrir origen del desgaste
+                        const discoverOriginBtn = document.createElement('button');
+                        discoverOriginBtn.textContent = 'Quiero conocer el origen de mi insatisfacción';
+                        discoverOriginBtn.className = 'w-full text-center px-6 py-3 rounded-lg shadow-md transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 bg-[#f9442c] text-white font-semibold';
+                        discoverOriginBtn.addEventListener('click', displayDesgasteOriginChoices);
+                        elements.resultCtaContainer.appendChild(discoverOriginBtn);
+
+                        // Botón: Descubrir acompañamiento
+                        const chooseAccompanimentBtn = document.createElement('button');
+                        chooseAccompanimentBtn.textContent = 'Quiero descubrir el acompañamiento ideal para mí';
+                        chooseAccompanimentBtn.className = 'w-full text-center px-6 py-3 rounded-lg shadow-md transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 bg-[#f9442c] text-white font-semibold';
+                        chooseAccompanimentBtn.addEventListener('click', displayAccompanimentChoices);
+                        elements.resultCtaContainer.appendChild(chooseAccompanimentBtn);
+                    } else {
+                        // CTAs propios del resultado (solo para alta-satisfaccion)
+                        if (finalResult.ctas) {
+                            finalResult.ctas.forEach(cta => {
+                                elements.resultCtaContainer.appendChild(
+                                    buildCTA(cta.text, cta.link, { share: cta.share })
+                                );
                             });
                         }
-                        elements.resultCtaContainer.appendChild(button);
-                    });
+                    }
 
                     showScreen('result');
                 }, 1500);
@@ -420,11 +597,25 @@
             elements.startBtn.addEventListener('click', () => {
                 showScreen('name');
             });
-
+            
             elements.continueNameBtn.addEventListener('click', () => {
                 userName = elements.nameInput.value.trim();
-                showScreen('question');
-                displayQuestion();
+                if (userName === '') {
+                    elements.nameInput.classList.add('border-red-500');
+                    elements.nameInput.classList.remove('border-gray-300');
+                } else {
+                    elements.nameInput.classList.remove('border-red-500');
+                    elements.nameInput.classList.add('border-gray-300');
+                    showScreen('question');
+                    displayQuestion();
+                }
+            });
+
+            elements.nameInput.addEventListener('input', () => {
+                if (elements.nameInput.value.trim() !== '') {
+                    elements.nameInput.classList.remove('border-red-500');
+                    elements.nameInput.classList.add('border-gray-300');
+                }
             });
 
             elements.backBtn.addEventListener('click', () => {
