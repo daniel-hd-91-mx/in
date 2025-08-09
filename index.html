@@ -55,20 +55,14 @@
                 <img src="https://raw.githubusercontent.com/daniel-hd-91-mx/in/main/Logo-Dan-Hernandez_Imagotipo-BLACK.png" alt="Logo" class="w-60" onerror="this.style.display='none'">
             </div>
             <h1 class="font-serif-display text-3xl md:text-4xl font-bold text-gray-800">¿Vives… o solo sobrevives?</h1>
+            <img src="https://raw.githubusercontent.com/daniel-hd-91-mx/in/main/sobreviviendo.png" alt="Persona apenas manteniéndose a flote" class="mx-auto my-6" style="height: 220px;">
             <p class="mt-4 text-gray-600">En 2 minutos sabrás tu nivel de satisfacción real y el siguiente paso para avanzar. Rápido, claro y revelador.</p>
             <button id="start-btn" class="mt-8 w-full text-center px-6 py-3 rounded-lg shadow-md transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 bg-[#f9442c] text-white font-semibold">
                 Comenzar ahora
             </button>
         </div>
 
-        <!-- 2. Pantalla de Captura de Nombre -->
-        <div id="name-screen" class="screen hidden text-center">
-            <h2 class="font-serif-display text-2xl font-bold text-gray-800 mb-4">¿Cómo te llamas?</h2>
-            <input type="text" id="name-input" placeholder="Tu Nombre" class="mt-6 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f9442c]">
-            <button id="continue-name-btn" class="mt-6 w-full text-center px-6 py-3 rounded-lg shadow-md transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 bg-[#f9442c] text-white font-semibold">Continuar</button>
-        </div>
-
-        <!-- 3. Pantalla de Preguntas -->
+        <!-- 2. Pantalla de Preguntas -->
         <div id="question-screen" class="screen hidden">
             <p id="progress-indicator" class="text-sm font-semibold text-center text-[#f9442c]">Pregunta 1 de 7</p>
             <h2 id="question-text" class="font-serif-display text-2xl font-bold text-gray-800 mt-4 text-center"></h2>
@@ -89,13 +83,14 @@
         </div>
 
 
-        <!-- 4. Pantalla de Resultado -->
+        <!-- 3. Pantalla de Resultado -->
         <div id="result-screen" class="screen hidden text-center">
             <div class="w-full flex justify-center mb-8">
-                <img src="https://raw.githubusercontent.com/daniel-hd-91-mx/in/main/Logo-Dan-Hernandez_Imagotipo-BLACK.png" alt="Logo" class="w-60" onerror="this.style.display='none'">
+                <img src="https://raw.githubusercontent.com/daniel-hd-91-mx/in/main/Logo-Dan-Hernandez_Imagotipo-BLACK.png" alt="Logo" class="w-[150px]" onerror="this.style.display='none'">
             </div>
             <h1 id="result-title" class="font-serif-display text-3xl font-bold text-[#1f2937]"></h1>
             <p id="result-text" class="mt-4 text-[#1f2937]"></p>
+            <!-- La ilustración se insertará aquí dinámicamente -->
             <div id="result-cta-container" class="mt-8 w-full space-y-4"></div>
             <div class="mt-6 border-t pt-6 space-y-2">
                 <button id="share-btn" class="text-sm font-semibold text-[#f9442c] hover:underline py-2 px-4 rounded-lg transition-colors">Comparte esta App</button>
@@ -105,12 +100,12 @@
             <p id="disclaimer" class="mt-4 text-xs text-gray-400 italic">Esta app no sustituye una consulta terapéutica ni un diagnóstico clínico. Si atraviesas una crisis o tienes pensamientos autodestructivos, busca ayuda profesional urgente.</p>
         </div>
         
-        <!-- 5. Pantalla de Elección de Acompañamiento -->
+        <!-- 4. Pantalla de Elección de Acompañamiento (Inactiva por ahora) -->
         <div id="accompaniment-choice-screen" class="screen hidden text-center">
             <!-- Contenido se insertará dinámicamente -->
         </div>
 
-        <!-- 6. Pantalla de Elección de Origen del Desgaste -->
+        <!-- 5. Pantalla de Elección de Origen del Desgaste (Inactiva por ahora) -->
         <div id="desgaste-origin-screen" class="screen hidden text-center">
             <!-- Contenido se insertará dinámicamente -->
         </div>
@@ -195,13 +190,11 @@
 
             // --- ESTADO DE LA APLICACIÓN ---
             let currentQuestionIndex = 0;
-            let userName = '';
             let userAnswers = new Array(questions.length).fill(null);
 
             // --- REFERENCIAS AL DOM ---
             const screens = {
                 welcome: document.getElementById('welcome-screen'),
-                name: document.getElementById('name-screen'),
                 question: document.getElementById('question-screen'),
                 loading: document.getElementById('loading-screen'),
                 result: document.getElementById('result-screen'),
@@ -211,8 +204,6 @@
 
             const elements = {
                 startBtn: document.getElementById('start-btn'),
-                nameInput: document.getElementById('name-input'),
-                continueNameBtn: document.getElementById('continue-name-btn'),
                 progressIndicator: document.getElementById('progress-indicator'),
                 questionText: document.getElementById('question-text'),
                 optionsContainer: document.getElementById('options-container'),
@@ -298,9 +289,12 @@
             function resetApp() {
                 currentQuestionIndex = 0;
                 userAnswers = new Array(questions.length).fill(null);
-                userName = '';
-                elements.nameInput.value = '';
                 elements.shareFeedback.textContent = '';
+                // Remove result illustration before going back to welcome
+                const existingImg = screens.result.querySelector('.result-illustration');
+                if (existingImg) {
+                    existingImg.remove();
+                }
                 showScreen('welcome');
             }
 
@@ -312,7 +306,8 @@
             }
 
             function displayQuestion() {
-                elements.backBtn.style.visibility = currentQuestionIndex > 0 ? 'visible' : 'hidden';
+                // El botón de regresar siempre es visible en la pantalla de preguntas
+                elements.backBtn.style.visibility = 'visible';
                 
                 const question = questions[currentQuestionIndex];
                 elements.progressIndicator.textContent = `Pregunta ${currentQuestionIndex + 1} de ${questions.length}`;
@@ -370,112 +365,6 @@
                 });
             }
             
-            function displayDesgasteOriginChoices() {
-                const container = screens.desgasteOrigin;
-                container.innerHTML = ''; // Clear previous content
-
-                const logoContainer = document.createElement('div');
-                logoContainer.className = 'w-full flex justify-center mb-6';
-                logoContainer.innerHTML = `<img src="https://raw.githubusercontent.com/daniel-hd-91-mx/in/main/Logo-Dan-Hernandez_Imagotipo-BLACK.png" alt="Logo" class="w-[150px]" onerror="this.style.display='none'">`;
-                container.appendChild(logoContainer);
-
-                const title = document.createElement('h2');
-                title.className = 'font-serif-display text-2xl font-bold text-gray-800 mb-6 text-center';
-                title.textContent = '¿De dónde viene tu desgaste?';
-                container.appendChild(title);
-
-                const buttonContainer = document.createElement('div');
-                buttonContainer.className = 'space-y-6';
-
-                // Opción 1: Desgaste Profesional/Laboral
-                const option1 = document.createElement('div');
-                const desc1 = document.createElement('p');
-                desc1.className = 'text-gray-600 text-sm mb-2';
-                desc1.textContent = 'Si viene del trabajo, un diagnóstico claro te ayudará a actuar con precisión. El test dura 20 minutos y entrega un informe personalizado.';
-                option1.appendChild(desc1);
-                option1.appendChild(
-                    buildCTA('Quiero evaluar si mi desgaste es profesional o laboral', 'https://tr.ee/7TMw7Q')
-                );
-                buttonContainer.appendChild(option1);
-
-                // Opción 2: Desgaste de Otras Áreas
-                const option2 = document.createElement('div');
-                const desc2 = document.createElement('p');
-                desc2.className = 'text-gray-600 text-sm mb-2';
-                desc2.textContent = 'Si es de otras áreas, detecta qué drena tu energía antes de que afecte lo demás. La app interactiva dura 5 minutos.';
-                option2.appendChild(desc2);
-                option2.appendChild(
-                    buildCTA('Quiero evaluar si mi desgaste viene de otras áreas de mi vida', 'https://tr.ee/X79xfz')
-                );
-                buttonContainer.appendChild(option2);
-
-                container.appendChild(buttonContainer);
-
-                const backButtonContainer = document.createElement('div');
-                backButtonContainer.className = 'mt-8 text-center';
-                const backBtn = document.createElement('button');
-                backBtn.className = 'text-sm text-gray-500 hover:text-[#f9442c] py-2 px-4 rounded-lg transition-colors';
-                backBtn.textContent = 'Regresar';
-                backBtn.addEventListener('click', () => showScreen('result'));
-                backButtonContainer.appendChild(backBtn);
-                container.appendChild(backButtonContainer);
-
-                showScreen('desgasteOrigin');
-            }
-
-            function displayAccompanimentChoices() {
-                const container = screens.accompanimentChoice;
-                container.innerHTML = ''; // Clear previous content
-
-                const logoContainer = document.createElement('div');
-                logoContainer.className = 'w-full flex justify-center mb-6';
-                logoContainer.innerHTML = `<img src="https://raw.githubusercontent.com/daniel-hd-91-mx/in/main/Logo-Dan-Hernandez_Imagotipo-BLACK.png" alt="Logo" class="w-[150px]" onerror="this.style.display='none'">`;
-                container.appendChild(logoContainer);
-
-                const title = document.createElement('h2');
-                title.className = 'font-serif-display text-2xl font-bold text-gray-800 mb-6 text-center';
-                title.textContent = 'Descubre tu Acompañamiento Ideal';
-                container.appendChild(title);
-
-                const buttonContainer = document.createElement('div');
-                buttonContainer.className = 'space-y-6';
-
-                // Opción 1: Terapia o Coaching
-                const option1 = document.createElement('div');
-                const desc1 = document.createElement('p');
-                desc1.className = 'text-gray-600 text-sm mb-2';
-                desc1.textContent = 'Tu desmotivación puede venir de desenfoque… o de un dolor emocional profundo. Descubre si necesitas sanar y reordenar, o claridad para reconectar. El test interactivo dura 2 minutos.';
-                option1.appendChild(desc1);
-                option1.appendChild(
-                    buildCTA('Quiero saber si necesito Terapia o Coaching', 'https://tr.ee/jSDe8L')
-                );
-                buttonContainer.appendChild(option1);
-
-                // Opción 2: Consultoría, Mentoría o Coaching
-                const option2 = document.createElement('div');
-                const desc2 = document.createElement('p');
-                desc2.className = 'text-gray-600 text-sm mb-2';
-                desc2.textContent = 'Sabes a dónde ir, pero estás desorientado. Identifica si requieres una guía paso a paso, la experiencia de alguien que ya lo logró o coaching para ejecutar. El test interactivo dura 2 minutos.';
-                option2.appendChild(desc2);
-                option2.appendChild(
-                    buildCTA('Quiero saber si necesito Consultoría, Mentoría o Coaching', 'https://tr.ee/iUvTFB')
-                );
-                buttonContainer.appendChild(option2);
-                
-                container.appendChild(buttonContainer);
-
-                const backButtonContainer = document.createElement('div');
-                backButtonContainer.className = 'mt-8 text-center';
-                const backBtn = document.createElement('button');
-                backBtn.className = 'text-sm text-gray-500 hover:text-[#f9442c] py-2 px-4 rounded-lg transition-colors';
-                backBtn.textContent = 'Regresar';
-                backBtn.addEventListener('click', () => showScreen('result'));
-                backButtonContainer.appendChild(backBtn);
-                container.appendChild(backButtonContainer);
-
-                showScreen('accompanimentChoice');
-            }
-
             function showResult() {
                 showScreen('loading');
 
@@ -496,29 +385,32 @@
                     else if (scores.satisfaccion >= 8) resultType = 'alta-satisfaccion';
                     else resultType = 'funcional';
 
-                    const namePrefix = userName ? `${userName}, ` : '';
-
                     const resultsData = {
                         alta: {
-                            title: `${namePrefix}esto no es solo cansancio.`,
+                            title: `Esto no es solo cansancio.`,
                             text: "Es momento de priorizarte y buscar apoyo profesional para entender, soltar y reconectar.",
+                            imageUrl: 'https://raw.githubusercontent.com/daniel-hd-91-mx/in/main/insat-baja.png'
                         },
                         media: {
                             title: `Estás funcionando… pero por dentro algo pide cambio.`,
                             text: "Este es buen momento para frenar y reconfigurar.",
+                            imageUrl: 'https://raw.githubusercontent.com/daniel-hd-91-mx/in/main/insat-media.png'
                         },
                         mixto: {
-                            title: `Estás entre lo que ya no… y lo que aún no es.`,
+                            title: `Estás en el momento ideal para evitar que el desgaste se apodere de tu energía.`,
                             text: "Necesitas claridad y escucha para encontrar tu dirección.",
+                            imageUrl: 'https://raw.githubusercontent.com/daniel-hd-91-mx/in/main/insat-media.png'
                         },
                         funcional: {
                             title: `Vas bien, pero podrías aprovechar más tu energía.`,
                             text: "A veces solo hay que afinar.",
+                            imageUrl: 'https://raw.githubusercontent.com/daniel-hd-91-mx/in/main/insat-media.png'
                         },
                         'alta-satisfaccion': {
                             title: `¡Estás en tu elemento!`,
-                            text: "Si algo se desbalancea, aquí estaremos.",
-                            ctas: [{ text: "Compartir esta app con alguien", share: true }]
+                            text: "Si por algo te desbalanceas o pierdes tu enfoque, aquí estaré para acompañarte a recuperarlo.",
+                            ctas: [{ text: "Compartir esta app con alguien", share: true }],
+                            imageUrl: 'https://raw.githubusercontent.com/daniel-hd-91-mx/in/main/insat-alta.png'
                         }
                     };
 
@@ -526,7 +418,24 @@
                     elements.resultTitle.textContent = finalResult.title;
                     elements.resultText.textContent = finalResult.text;
 
-                    // Limpia contenedor
+                    // Limpia la ilustración anterior
+                    const existingImg = screens.result.querySelector('.result-illustration');
+                    if (existingImg) {
+                        existingImg.remove();
+                    }
+
+                    // Añade la nueva ilustración si existe
+                    if (finalResult.imageUrl) {
+                        const illustration = document.createElement('img');
+                        illustration.src = finalResult.imageUrl;
+                        illustration.alt = 'Ilustración del resultado';
+                        illustration.className = 'result-illustration mx-auto my-6';
+                        illustration.style.width = '300px';
+                        elements.resultText.insertAdjacentElement('afterend', illustration);
+                    }
+
+
+                    // Limpia contenedor de CTAs
                     elements.resultCtaContainer.innerHTML = '';
 
                     // Inserta bloque de progresión y botones (excepto en alta-satisfaccion)
@@ -537,14 +446,14 @@
                         const discoverOriginBtn = document.createElement('button');
                         discoverOriginBtn.textContent = 'Quiero conocer el origen de mi insatisfacción';
                         discoverOriginBtn.className = 'w-full text-center px-6 py-3 rounded-lg shadow-md transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 bg-[#f9442c] text-white font-semibold';
-                        discoverOriginBtn.addEventListener('click', displayDesgasteOriginChoices);
+                        discoverOriginBtn.addEventListener('click', () => window.open('https://tr.ee/7TMw7Q', '_blank'));
                         elements.resultCtaContainer.appendChild(discoverOriginBtn);
 
                         // Botón: Descubrir acompañamiento
                         const chooseAccompanimentBtn = document.createElement('button');
                         chooseAccompanimentBtn.textContent = 'Quiero descubrir el acompañamiento ideal para mí';
                         chooseAccompanimentBtn.className = 'w-full text-center px-6 py-3 rounded-lg shadow-md transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 bg-[#f9442c] text-white font-semibold';
-                        chooseAccompanimentBtn.addEventListener('click', displayAccompanimentChoices);
+                        chooseAccompanimentBtn.addEventListener('click', () => window.open('https://tr.ee/YPS1Og', '_blank'));
                         elements.resultCtaContainer.appendChild(chooseAccompanimentBtn);
                     } else {
                         // CTAs propios del resultado (solo para alta-satisfaccion)
@@ -595,34 +504,17 @@
             // --- EVENT LISTENERS ---
 
             elements.startBtn.addEventListener('click', () => {
-                showScreen('name');
+                showScreen('question');
+                displayQuestion();
             });
             
-            elements.continueNameBtn.addEventListener('click', () => {
-                userName = elements.nameInput.value.trim();
-                if (userName === '') {
-                    elements.nameInput.classList.add('border-red-500');
-                    elements.nameInput.classList.remove('border-gray-300');
-                } else {
-                    elements.nameInput.classList.remove('border-red-500');
-                    elements.nameInput.classList.add('border-gray-300');
-                    showScreen('question');
-                    displayQuestion();
-                }
-            });
-
-            elements.nameInput.addEventListener('input', () => {
-                if (elements.nameInput.value.trim() !== '') {
-                    elements.nameInput.classList.remove('border-red-500');
-                    elements.nameInput.classList.add('border-gray-300');
-                }
-            });
-
             elements.backBtn.addEventListener('click', () => {
                 if (currentQuestionIndex > 0) {
                     currentQuestionIndex--;
-                    userAnswers[currentQuestionIndex] = null;
                     displayQuestion();
+                } else {
+                    // Si está en la primera pregunta, regresa a la pantalla de bienvenida
+                    showScreen('welcome');
                 }
             });
 
